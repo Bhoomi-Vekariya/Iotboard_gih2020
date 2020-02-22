@@ -30,6 +30,7 @@ import java.util.Map;
 public class Login extends AppCompatActivity {
     EditText edtusername, edtpassword;
     Button b1;
+    SharedPreferences.Editor editor;
 
     public static final String MyPREFERENCES = "MyPrefs";
     SharedPreferences sharedpreferences;
@@ -42,7 +43,13 @@ public class Login extends AppCompatActivity {
         edtusername = findViewById(R.id.username);
         edtpassword = findViewById(R.id.password);
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-
+        String valusername=edtusername.getText().toString();
+        String valpassword=edtpassword.getText().toString();
+        editor = sharedpreferences.edit();
+        String user = sharedpreferences.getString("username", null);
+        if(user!=null){
+            startActivity(new Intent(Login.this, MainActivity.class));
+        }
 
 
     }
@@ -54,8 +61,11 @@ public class Login extends AppCompatActivity {
         StringRequest MyStringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                System.out.println("this is is is : "+response);
+                System.out.println("th" +
+                        "is is is is : "+response);
                 if(response.equals("1")) {
+                    editor.putString("username", uname);
+                    editor.commit();
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     finish();
                 }

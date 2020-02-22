@@ -4,9 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -46,10 +50,35 @@ public class MainActivity extends AppCompatActivity {
         String user = preferences.getString("username", null);
         uname = user;
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.mylogout:
+                logout(uname);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void logout(String prefKey) {
+        preferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
+        editor = preferences.edit();
+        editor.remove("username");
+        editor.apply();
+        editor.commit();
+        startActivity(new Intent(MainActivity.this, Login.class));
+    }
 
     public void send_Data(View view) {
         dooit(uname,msg.getText().toString());
+        
     }
 
     void dooit(final String uname, final String msg)
@@ -60,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
         StringRequest MyStringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                Toast.makeText(MainActivity.this, "Successfully updated!", Toast.LENGTH_SHORT).show();
                 System.out.println("this is is is : "+response);
             }
         }, new Response.ErrorListener() { //Create an error listener to handle errors appropriately.
